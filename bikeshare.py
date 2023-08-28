@@ -226,9 +226,40 @@ def load_filter_data(city, month=None, day=None, user=None, gender=None, birth_y
 	# Returns Pandas DataFrame 
     return df
 
-# Displays various statistics regarding the most/least popular month, day of the week and hour
-def time_stats(df, city, month, day, user, gender, birth_year):
 
+def check_empty(df):
+	'''
+	Check if filtered DataFrame is empty due to non-existent values from applied filters
+	If DataFrame is empty, prompt the user to re-select a city with new filters
+
+	Arguments:
+	df : returned filtered DataFrame
+
+	Returns:
+	Boolean value True or False
+
+	'''
+	check = df.empty
+
+	return check
+
+
+def time_stats(df, city, month, day, user, gender, birth_year):
+	'''
+	Displays the most and least popular months, days and hours of the day
+	Displays the number of rides taken for the most and least popular months, days and hours of the day
+	Function takes in 7 arguments as all previously selected filters are needed to be displayed for the user
+
+	Arguments:
+	df : filtered DataFrame
+	city (str) : passed into function to display which city statistics are being shown
+	month (str, default=None) : displaying optional month filter
+	day (str, default=None) : displaying optional day filter
+	user (str, default=None) : displaying optional user type filter 
+	gender (str, default=None) : displaying optional gender filter
+	birth year (float, default=None) : displaying optional birth year filter
+
+	'''
 	# Initialize start time and save to a variable
 	start_time = time.time()
 	
@@ -270,9 +301,15 @@ def time_stats(df, city, month, day, user, gender, birth_year):
 	print("Processing request: %s seconds." % (time.time() - start_time))
 
 
-# Displays various statistics regarding the most/least popular start and end stations, including the most popular trip
 def station_stats(df):
+	'''
+	Displays the most and least popular start and end stations including the number of rides taken at each respective station
+	Displays the most popular trip, the highest frequency of start and end station combinations, including the number of rides for this trip
 
+	Arguments:
+	df : filtered DataFrame
+
+	'''
 	# Initialize start time and save to a variable
 	start_time = time.time()
 
@@ -303,9 +340,17 @@ def station_stats(df):
 	print("Processing request: %s seconds." % (time.time() - start_time))
 
 
-# Displays various statistics regarding trip durations such as total, average, longest and shortest ride times
 def trip_duration_stats(df):
+	'''
+	Displays trip duration times such as both the total trip time in minutes and the average trip time in minutes based on the filters applied
+	Displays additional trip duration times such as the longest trip taken and shortest trip taken in minutes
+	Trip duration times have been converted to minutes from seconds, allowing for easier user comprehension
+	Statistics are displayed in a stopwatch fashion; first the number of minutes are displayed, followed by the number of seconds
 
+	Arguments:
+	df : filtered DataFrame
+
+	'''
 	# Initialize start time and save to a variable
 	start_time = time.time()
 
@@ -327,9 +372,21 @@ def trip_duration_stats(df):
 	print("Processing request: %s seconds." % (time.time() - start_time))
 
 
-# Displays various statistics regarding users, such as the user type, gender, and birth year where applicable (Chicago and New York data only)
 def user_stats(df, city, user, gender, birth_year):
+	'''
+	Displays various statistics regarding the different user types and their frequencies, as well as the number of male vs female riders
+	Displays various birth year statistics such as the most common and least common birth years, including the earliest and latest birth years
+	Diplays the total number of records after the DataFrame has been filtered
 
+	Arguments:
+	df : filtered DataFrame
+	city : passed into function to determine which city has been selected to filter accordingly
+		   (Chicago and New York can be additionally filtered by gender and birth year, Washington cannot)
+	user : displaying optional user type filter
+	gender : displaying optional gender filter
+	birth year : displaying optional birth year filter
+
+	'''
 	# Initialize start time and save to a variable
 	start_time = time.time()
 	
@@ -380,9 +437,18 @@ def user_stats(df, city, user, gender, birth_year):
 	print(f"\nThere are {records} records in the DataFrame")
 
 
-# Allows user to view the raw data in iterations of 5, printed to the terminal
 def view_data(df, city):
+	'''
+	Displays the raw bikesharing data for the selected city, printing the first 5 rows of the DataFrame
+	Users are then prompted again to view additional rows or to exit out of the raw data
+	If more raw data is requested, an additional 5 rows are printed to the console
+	Users can continue to view more and more requested data in 5-row iterations until they have viewed all the filtered data
 
+	Arguments:
+	df : filtered DataFrame
+	city : passed into function to display which city data is being viewed
+
+	'''
 	rows = 1
 	while True:
 		print("\n{} Bikeshare Data".format(city))
@@ -403,34 +469,41 @@ def main():
 		city, month, day = find_filters()
 		user, gender, birth_year = additional_filters(city)
 		df = load_filter_data(city, month, day, user, gender, birth_year)
-			
-		time_stats(df, city, month, day, user, gender, birth_year)
-		station_stats(df)
-		trip_duration_stats(df)
-		user_stats(df, city, user, gender, birth_year)
 
-		while True:
-			# Ask user if they would like to view the individual rides for the selected city
-			user_input = input(f"Would you like to view individual ride data for {city}? Type Yes or No ").lower()
-			if user_input == "yes":
-				view_data(df, city)
-				break
-			elif user_input == 'no':
-				break
-			else:
-				print("Invalid input. Please enter Yes or No")
-				continue
-		while True:
-			# Ask user if they would like to reset the DataFrame and view another city
-			restart = input("\nWould you like to reset the data or view another city? Type Yes or No ").lower()
-			if restart == 'yes':
-				break
-			elif restart == 'no':
-				exit()
-			else:
-				print("Invalid input. Please enter Yes or No")
-				continue
-		continue
+		empty_df = check_empty(df)
+		if empty_df != True:
+			
+			time_stats(df, city, month, day, user, gender, birth_year)
+			station_stats(df)
+			trip_duration_stats(df)
+			user_stats(df, city, user, gender, birth_year)
+
+			while True:
+				# Ask user if they would like to view the individual rides for the selected city
+				user_input = input(f"Would you like to view individual ride data for {city}? Type Yes or No ").lower()
+				if user_input == "yes":
+					view_data(df, city)
+					break
+				elif user_input == 'no':
+					break
+				else:
+					print("Invalid input. Please enter Yes or No")
+					continue
+			while True:
+				# Ask user if they would like to reset the DataFrame and view another city
+				restart = input("\nWould you like to reset the data or view another city? Type Yes or No ").lower()
+				if restart == 'yes':
+					break
+				elif restart == 'no':
+					exit()
+				else:
+					print("Invalid input. Please enter Yes or No")
+					continue
+			continue
+		
+		else:
+			print("DataFrame is empty! Please select a city and different filters\n")
+			continue
 
 
 if __name__ == "__main__":
