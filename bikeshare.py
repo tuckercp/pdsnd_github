@@ -226,6 +226,24 @@ def load_filter_data(city, month=None, day=None, user=None, gender=None, birth_y
 	# Returns Pandas DataFrame 
     return df
 
+
+def check_empty(df):
+	'''
+	Check if filtered DataFrame is empty due to non-existent values from applied filters
+	If DataFrame is empty, prompt the user to re-select a city with new filters
+
+	Arguments:
+	df : returned filtered DataFrame
+
+	Returns:
+	Boolean value True or False
+
+	'''
+	check = df.empty
+
+	return check
+	
+
 # Displays various statistics regarding the most/least popular month, day of the week and hour
 def time_stats(df, city, month, day, user, gender, birth_year):
 
@@ -403,34 +421,41 @@ def main():
 		city, month, day = find_filters()
 		user, gender, birth_year = additional_filters(city)
 		df = load_filter_data(city, month, day, user, gender, birth_year)
-			
-		time_stats(df, city, month, day, user, gender, birth_year)
-		station_stats(df)
-		trip_duration_stats(df)
-		user_stats(df, city, user, gender, birth_year)
 
-		while True:
-			# Ask user if they would like to view the individual rides for the selected city
-			user_input = input(f"Would you like to view individual ride data for {city}? Type Yes or No ").lower()
-			if user_input == "yes":
-				view_data(df, city)
-				break
-			elif user_input == 'no':
-				break
-			else:
-				print("Invalid input. Please enter Yes or No")
-				continue
-		while True:
-			# Ask user if they would like to reset the DataFrame and view another city
-			restart = input("\nWould you like to reset the data or view another city? Type Yes or No ").lower()
-			if restart == 'yes':
-				break
-			elif restart == 'no':
-				exit()
-			else:
-				print("Invalid input. Please enter Yes or No")
-				continue
-		continue
+		empty_df = check_empty(df)
+		if empty_df != True:
+			
+			time_stats(df, city, month, day, user, gender, birth_year)
+			station_stats(df)
+			trip_duration_stats(df)
+			user_stats(df, city, user, gender, birth_year)
+
+			while True:
+				# Ask user if they would like to view the individual rides for the selected city
+				user_input = input(f"Would you like to view individual ride data for {city}? Type Yes or No ").lower()
+				if user_input == "yes":
+					view_data(df, city)
+					break
+				elif user_input == 'no':
+					break
+				else:
+					print("Invalid input. Please enter Yes or No")
+					continue
+			while True:
+				# Ask user if they would like to reset the DataFrame and view another city
+				restart = input("\nWould you like to reset the data or view another city? Type Yes or No ").lower()
+				if restart == 'yes':
+					break
+				elif restart == 'no':
+					exit()
+				else:
+					print("Invalid input. Please enter Yes or No")
+					continue
+			continue
+		
+		else:
+			print("DataFrame is empty! Please select a city and different filters\n")
+			continue
 
 
 if __name__ == "__main__":
