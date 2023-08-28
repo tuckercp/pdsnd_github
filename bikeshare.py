@@ -7,12 +7,12 @@ city_data = {"Chicago": 'chicago.csv',
              "New York": 'new_york_city.csv',
              "Washington": 'washington.csv'}
 
-print("\nEXPLORING US BIKESHARE DATA")
+print("\nEXPLORING US BIKE SHARE DATA")
 print("_" * 60)
 
 print(bikeshareart.logo_initialize)
 
-print("Welcome! Let's explore some bikesharing data from 3 major US Cities!\n")
+print("Welcome! Let's explore some bike sharing data from 3 major US Cities!\n")
 
 
 def find_filters():
@@ -20,17 +20,17 @@ def find_filters():
     Prompts the user for a city, as well as a month and/or day as filters for the DataFrame
 
     Returns:
-    city (str) : provided city, additionally accessing the city bikeshare .csv file from dictionary city_data
+    city (str) : provided city, additionally accessing the city bike share .csv file from dictionary city_data
     month (str) : optional month filter
     day (str) : optional day filter
 
     """
     while True:
-        # Ask the user from which city they would like to view bikeshare data
+        # Ask the user from which city they would like to view bike share data
         city = input("Which US city data would you like to view? Chicago, New York or Washington ").title()
 
         if city == "Chicago" or city == "New York" or city == "Washington":
-            print(f"You will be viewing {city} Bikesharing data!")
+            print(f"You will be viewing {city} Bike sharing data!")
             break
         else:
             print("Invalid input. Please select one of the three cities above.")
@@ -248,17 +248,17 @@ def check_empty(df):
     return check
 
 
-# Displays various statistics regarding the most/least popular month, day of the week and hour
+# Displays various statistics regarding the most and least popular month, day of the week and hour
 def time_stats(df, city, month, day, user, gender, birth_year):
     # Initialize start time and save to a variable
     start_time = time.time()
 
     # Display the filters that have been applied to the DataFrame
-    print("\n{} Bikeshare Statistics".format(city))
+    print("\n{} Bike share Statistics".format(city))
     print(
         f"\nFilters applied: Month: {month} | Day: {day} | User Type: {user} | Gender: {gender} | Birth Year: "
         f"{birth_year}")
-    print("\nCalcuating the most and least popular travel times...")
+    print("\nCalculating the most and least popular travel times...")
 
     # Display the most and least popular month and number of rides if month is not filtered
     if month is None:
@@ -282,13 +282,14 @@ def time_stats(df, city, month, day, user, gender, birth_year):
 
     # Displays the most and least popular hours of the day including their frequency
     try:
-        pop_hour = df['Hour'].mode()[0]
-        pop_hour_count = df['Hour'].value_counts()[0]
-        unpop_hour = df['Hour'].value_counts().keys()[-1]
-        unpop_hour_count = df['Hour'].value_counts()[-1]
+        popular_hour = df['Hour'].mode()[0]
+        popular_hour_count = df['Hour'].value_counts()[0]
+        unpopular_hour = df['Hour'].value_counts().keys()[-1]
+        unpopular_hour_count = df['Hour'].value_counts()[-1]
 
         print(
-            f"Most popular hour: {pop_hour} ({pop_hour_count}) | Least popular hour: {unpop_hour} ({unpop_hour_count})")
+            f"Most popular hour: {popular_hour} ({popular_hour_count}) | Least popular hour: {unpopular_hour} "
+            f"({unpopular_hour_count})")
 
     except KeyError:
         print("There are no records with the selected filters.")
@@ -296,12 +297,13 @@ def time_stats(df, city, month, day, user, gender, birth_year):
     print("Processing request: %s seconds." % (time.time() - start_time))
 
 
-# Displays various statistics regarding the most/least popular start and end stations, including the most popular trip
+# Displays various statistics regarding the most and least popular start and end stations, including the most popular
+# trip
 def station_stats(df):
     # Initialize start time and save to a variable
     start_time = time.time()
 
-    print("\nCalcuating the most and least popular stations and trips...")
+    print("\nCalculating the most and least popular stations and trips...")
 
     # Display the most and least popular start stations
     high_start_station = df['Start Station'].mode()[0]
@@ -324,10 +326,10 @@ def station_stats(df):
         f"{low_end_station} ({low_end_count})")
 
     # Displays the most common trip (most frequent start and end station combination)
-    pop_trip = df['Trip Start and End'].mode()[0]
+    popular_trip = df['Trip Start and End'].mode()[0]
     trip_count = df['Trip Start and End'].value_counts()[0]
 
-    print(f"Most popular trip: {pop_trip} ({trip_count})")
+    print(f"Most popular trip: {popular_trip} ({trip_count})")
 
     print("Processing request: %s seconds." % (time.time() - start_time))
 
@@ -337,7 +339,7 @@ def trip_duration_stats(df):
     # Initialize start time and save to a variable
     start_time = time.time()
 
-    print("\nCalcuating statistics on ride times in minutes...")
+    print("\nCalculating statistics on ride times in minutes...")
 
     # Display the total and average ride times
     total_min = df['Duration in Seconds'].sum() // 60 + round((df['Duration in Seconds'].sum() % 60 / 100), 2)
@@ -357,13 +359,13 @@ def trip_duration_stats(df):
     print("Processing request: %s seconds." % (time.time() - start_time))
 
 
-# Displays various statistics regarding users, such as the user type, gender, and birth year where applicable
+# Displays various statistics regarding users, such as the user type, gender, and birth year when applicable
 # (Chicago and New York data only)
 def user_stats(df, city, user, gender, birth_year):
     # Initialize start time and save to a variable
     start_time = time.time()
 
-    print("\nCalcuating statistics on user types, gender and birth year...")
+    print("\nCalculating statistics on user types, gender and birth year...")
 
     if city == "Chicago" or city == "New York":
         # Display the number of subscribers and customers if user type is not filtered
@@ -383,14 +385,14 @@ def user_stats(df, city, user, gender, birth_year):
         # Display the number of male and female riders if gender is not filtered
         if birth_year is None:
             try:
-                pop_birth_year = int(df['Birth Year'].mode()[0])
-                unpop_birth_year = int(df['Birth Year'].value_counts().keys()[-1])
+                popular_birth_year = int(df['Birth Year'].mode()[0])
+                unpopular_birth_year = int(df['Birth Year'].value_counts().keys()[-1])
 
                 avg_birth_year = int(df['Birth Year'].mean())
                 old_birth_year = int(df['Birth Year'].max())
                 young_birth_year = int(df['Birth Year'].min())
 
-                print(f"Most common birth year: {pop_birth_year} | Least common birth year: {unpop_birth_year}")
+                print(f"Most common birth year: {popular_birth_year} | Least common birth year: {unpopular_birth_year}")
                 print(
                     f"Average birth year: {avg_birth_year} | Oldest birth year: {old_birth_year} | "
                     f"Youngest birth year: {young_birth_year}")
@@ -416,7 +418,7 @@ def user_stats(df, city, user, gender, birth_year):
 def view_data(df, city):
     rows = 1
     while True:
-        print("\n{} Bikeshare Data".format(city))
+        print("\n{} Bike Share Data".format(city))
         print(df.iloc[rows - 1:rows + 4])
         more_data = input(f"\nWould you like to view more individual ride data in {city}? Type Yes or No ").lower()
         if more_data == "yes":
