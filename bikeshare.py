@@ -208,23 +208,23 @@ def load_filter_data(city, month=None, day=None, user=None, gender=None, birth_y
     df['Hour'] = df['Start Time'].dt.strftime('%-I%p')
 
     # Filter by month if applicable
-    if month != None:
+    if month is not None:
         df = df.loc[df['Month'] == month]
 
     # Filter by day of the week if applicable
-    if day != None:
+    if day is not None:
         df = df.loc[df['Day of Week'] == day]
 
     # Filter by user type if applicable
-    if user != None:
+    if user is not None:
         df = df.loc[df['User Type'] == user]
 
     # Filter by gender if applicable
-    if gender != None:
+    if gender is not None:
         df = df.loc[df['Gender'] == gender]
 
     # Filter by birth year if applicable
-    if birth_year != None:
+    if birth_year is not None:
         df = df.loc[df['Birth Year'] == birth_year]
 
     # Returns Pandas DataFrame
@@ -261,7 +261,7 @@ def time_stats(df, city, month, day, user, gender, birth_year):
     print("\nCalcuating the most and least popular travel times...")
 
     # Display the most and least popular month and number of rides if month is not filtered
-    if month == None:
+    if month is None:
         high_month = df['Month'].mode()[0]
         high_month_count = df['Month'].value_counts()[0]
         low_month = df['Month'].value_counts().keys()[-1]
@@ -272,7 +272,7 @@ def time_stats(df, city, month, day, user, gender, birth_year):
             f"({low_month_count})")
 
     # Display the most and least popular day and number of rides if day is not filtered
-    if day == None:
+    if day is None:
         high_day = df['Day of Week'].mode()[0]
         high_day_count = df['Day of Week'].value_counts()[0]
         low_day = df['Day of Week'].value_counts().keys()[-1]
@@ -367,21 +367,21 @@ def user_stats(df, city, user, gender, birth_year):
 
     if city == "Chicago" or city == "New York":
         # Display the number of subscribers and customers if user type is not filtered
-        if user == None:
+        if user is None:
             subscriber_count = (df['User Type'] == 'Subscriber').sum()
             customer_count = (df['User Type'] == 'Customer').sum()
 
             print(f"Number of subscribers: {subscriber_count} | Number of customers: {customer_count}")
 
         # Display the number of male and female riders if gender is not filtered
-        if gender == None:
+        if gender is None:
             male_riders_count = (df['Gender'] == 'Male').sum()
             female_riders_count = (df['Gender'] == 'Female').sum()
 
             print(f"Male riders: {male_riders_count} | Female riders: {female_riders_count}")
 
         # Display the number of male and female riders if gender is not filtered
-        if birth_year == None:
+        if birth_year is None:
             try:
                 pop_birth_year = int(df['Birth Year'].mode()[0])
                 unpop_birth_year = int(df['Birth Year'].value_counts().keys()[-1])
@@ -436,7 +436,7 @@ def main():
         df = load_filter_data(city, month, day, user, gender, birth_year)
 
         empty_df = check_empty(df)
-        if empty_df != True:
+        if not empty_df:
 
             time_stats(df, city, month, day, user, gender, birth_year)
             station_stats(df)
