@@ -16,7 +16,7 @@ print("Welcome! Let's explore some bikesharing data from 3 major US Cities!\n")
 
 
 def find_filters():
-    '''
+    """
     Prompts the user for a city, as well as a month and/or day as filters for the DataFrame
 
     Returns:
@@ -24,7 +24,7 @@ def find_filters():
     month (str) : optional month filter
     day (str) : optional day filter
 
-    '''
+    """
     while True:
         # Ask the user from which city they would like to view bikeshare data
         city = input("Which US city data would you like to view? Chicago, New York or Washington ").title()
@@ -92,7 +92,7 @@ def find_filters():
 
 
 def additional_filters(city):
-    '''
+    """
     Additional optional filtering parameters such as user type, gender and birth year
     Only Chicago and New York contain additional columns regarding gender and birth year
 
@@ -104,7 +104,7 @@ def additional_filters(city):
     gender (str) : optional gender filter
     birth year (float) : optional birth year filter
 
-    '''
+    """
     # Set filter variables to None value types for cases where filtering is not applicable
     user = None
     gender = None
@@ -169,7 +169,7 @@ def additional_filters(city):
 
 
 def load_filter_data(city, month=None, day=None, user=None, gender=None, birth_year=None):
-    '''
+    """
     Loads the DataFrame for the selected city and creates new columns for filtering data
     Function takes 6 arguments (only city variable is mandatory)
     Filters by month, day of the week, user type, gender and/or birth year
@@ -184,7 +184,7 @@ def load_filter_data(city, month=None, day=None, user=None, gender=None, birth_y
     Returns:
     df : Pandas Dataframe containing filtered data for the selected city
 
-    '''
+    """
 
     # Load csv file into a dataframe
     df = pd.read_csv(city_data[city])
@@ -231,7 +231,7 @@ def load_filter_data(city, month=None, day=None, user=None, gender=None, birth_y
 
 
 def check_empty(df):
-    '''
+    """
     Check if filtered DataFrame is empty due to non-existent values from applied filters
     If DataFrame is empty, prompt the user to re-select a city with new filters
 
@@ -241,7 +241,7 @@ def check_empty(df):
     Returns:
     Boolean value True or False
 
-    '''
+    """
     check = df.empty
 
     return check
